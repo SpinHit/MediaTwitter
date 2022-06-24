@@ -22,7 +22,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cd ./front/ && npm start && cd.. && cd ./back/ && yarn start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
