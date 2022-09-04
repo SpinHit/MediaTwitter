@@ -12,7 +12,7 @@ const { json } = require("body-parser");
 const app = express();
 
 const PORT = process.env.PORT || 8000;
-const BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAKQMcwEAAAAAMvWlgE%2FmcGIl2PkY20DnYedzNqc%3Dw1VJREmDvHrAHD4Evtt4OBb4PxXUM8yCgxslqNUjUNdzp1ieCm';
+const BEARER_TOKEN = '';
 const get = util.promisify(request.get);
 
 var con = mysql.createConnection({
@@ -134,49 +134,64 @@ let getTweetv2 = async (req, res, id) => {
   }
 };
 
-/*app.get("/api/tweet/Cerfia", async (req, res) => {
-  const streamURL = new URL(
-    "https://api.twitter.com/2/users/971820228/tweets?max_results=5&tweet.fields=created_at,public_metrics"
-  );
-  return getTweet(req, res, streamURL);
-});
+let getComment = async (req, res, id) => {
 
-app.get("/api/profile/Cerfia", async (req, res) => {
   const streamURL = new URL(
-    "https://api.twitter.com/2/users/by/username/cerfiaFR?user.fields=profile_image_url"
+    "https://api.twitter.com/2/users/by/username/" + id + "?user.fields=profile_image_url"
   );
-  return getTweet(req, res, streamURL);
-});*/
 
-/* app.get("/api/tweet/Cerfia", async (req, res) => {
-  const streamURL = new URL(
-    "https://api.twitter.com/2/users/971820228/tweets?max_results=30&tweet.fields=created_at,public_metrics"
-  );
-  return getTweet(req, res, streamURL);
-});
+  const requestConfig = {
+    url: streamURL,
+    auth: {
+      bearer: BEARER_TOKEN,
+    },
+    json: true,
+  };
 
-app.get("/api/profile/Cerfia", async (req, res) => {
-  const streamURL = new URL(
-    "https://api.twitter.com/2/users/by/username/cerfiaFR?user.fields=profile_image_url"
-  );
-  return getTweet(req, res, streamURL);
-});
- */
+  try {
+    const response = await get(requestConfig);
+
+    if (response.statusCode !== 200) {
+      throw new Error(response.body.error.message);
+    }
+
+    const streamURL2 = new URL(
+      "https://api.twitter.com/2/users/" + response.body.data.id + "/tweets?max_results=30&tweet.fields=created_at,public_metrics"
+    );
+
+    const requestConfig2 = {
+      url: streamURL2,
+      auth: {
+        bearer: BEARER_TOKEN,
+      },
+      json: true,
+    };
+
+    const response2 = await get(requestConfig2);
+
+    if (response2.statusCode !== 200) {
+      throw new Error(response2.body.error.message);
+    }
+
+    var image = { image: response.body.data };
+    var text = { text: response2.body.data };
+    var textAndImage = Object.assign(image, text);
+
+    //database(texting);
+
+    for (var key in text.text) {
+      if (text.text.hasOwnProperty(key)) {
+
+        database(validate(text.text[key].text), text.text[key].public_metrics.retweet_count, text.text[key].public_metrics.like_count, text.text[key].public_metrics.reply_count, text.text[key].public_metrics.quote_count, text.text[key].created_at, text.text[key].id, image.image.id, image.image.profile_image_url, image.image.username);
+      }
+    }
+    res.send(textAndImage);
 
 
-/* app.get("/api/tweet/Media", async (req, res) => {
-  const streamURL = new URL(
-    "https://api.twitter.com/2/users/1214315619031478272/tweets?max_results=30&tweet.fields=created_at,public_metrics"
-  );
-  return getTweet(req, res, streamURL);
-}); */
-
-/* app.get("/api/profile/Media", async (req, res) => {
-  const streamURL = new URL(
-    "https://api.twitter.com/2/users/by/username/Mediavenir?user.fields=profile_image_url"
-  );
-  return getTweet(req, res, streamURL);
-}); */
+  } catch (err) {
+    res.send(err);
+  }
+};
 
 app.get('/api/Tweet/:id', (req, res) => {
   const { id } = req.params;
@@ -199,12 +214,6 @@ app.get('/api/LocalTweets', (req, res) => {
 });
 
 
-/* app.get("/api/tweet/musk", async (req, res) => {
-  const streamURL = new URL(
-    "https://api.twitter.com/2/users/1214315619031478272/tweets?max_results=30&tweet.fields=created_at,public_metrics"
-  );
-  return getTweet(req, res, streamURL);
-}); */
 
 app.use((req, res) => res.status(404).type("txt").send("🤷‍♂️"));
 
