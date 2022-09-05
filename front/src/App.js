@@ -15,6 +15,7 @@ import Search from "./images/search.svg";
 
 
 export default function App() {
+  {/*On met l'etat a false pour tout les boutons*/ }
   const [showResults, setShowResults] = React.useState(false);
   const [showResults2, setShowResults2] = React.useState(false);
   const [showResults3, setShowResults3] = React.useState(false);
@@ -46,7 +47,10 @@ export default function App() {
         <Switch>
           <Route exact path="/">
 
+            {/*Zone boutons raccourcis*/}
+
             <div className="Racourcis">
+              {/* si l'on clique sur un bouton sela va afficher les tweets de celui si et mettre l'etat false a tout les autres*/}
               <button onClick={() => { setShowResults(!showResults); setShowResults2(false); setShowResults3(false); setShowResults4(false); setShowResults5(false); setShowResults6(false); }} ><img src={Cerfia} alt='logo cerfia' /></button>
               <button onClick={() => { setShowResults2(!showResults2); setShowResults(false); setShowResults3(false); setShowResults4(false); setShowResults5(false); setShowResults6(false); }} ><img src={Mediavenir} alt='logo cerfia' /></button>
               <button id='boutonVert' onClick={() => { setShowResults6(!showResults6); setShowResults(false); setShowResults2(false); setShowResults4(false); setShowResults5(false); setShowResults3(false); }} >Afficher les tweets enregistrer</button>
@@ -54,6 +58,10 @@ export default function App() {
               <button onClick={() => { setShowResults4(!showResults4); setShowResults2(false); setShowResults3(false); setShowResults(false); setShowResults5(false); setShowResults6(false); }} ><img src={Mediapart} alt='logo cerfia' /></button>
 
             </div>
+
+
+            {/* Barre de recherche*/}
+
             <form className="SearchZone" onSubmit={handleSubmit(onSubmit)}>
               <div className="Column">
                 <input id='SearchBar' type="text" placeholder="Entre le pseudo du media que vous cherchez" {...register("Search", { required: true, max: 15, maxLength: { message: "Un pseudo twitter ne peu dépasser 15 characteres", value: 15 }, /* pattern: { message: "Veuillez saisir un pseudo conforme", value: /^([^0-9]*)$/i } */ })} />
@@ -63,6 +71,9 @@ export default function App() {
               <input id='SearchButton' type="image" src={Search} alt='logo cerfia' />
             </form>
 
+
+
+            {/*zone ou vont s'afficher les tweets*/}
             <div className="Tweets">
               {showResults ? <TweetApp nom="cerfiaFR" /> : null}
               {showResults2 ? <TweetApp nom="Mediavenir" /> : null}
@@ -73,10 +84,6 @@ export default function App() {
 
             </div>
 
-            {/*             <div className="midleZone">
-              <TweetApp nom='cerfiafr' />
-              <TweetApp nom='Mediavenir' />
-            </div> */}
             <MailNous />
           </Route>
         </Switch>

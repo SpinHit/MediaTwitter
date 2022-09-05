@@ -51,8 +51,10 @@ export default function TweetApp(props) {
 
   return (
     <>
+      {/*Toast pour avoir la pop up en ha*/}
       <ToastContainer />
       <div className="midle">
+        {/*on map les tweets pour avoir les liste des tweets*/}
         {currentItems.map(item => (
           <div className="twitterCube">
             <img src={dataProfile.profile_image_url} alt={"profile" + props.nom} />
@@ -64,6 +66,8 @@ export default function TweetApp(props) {
             </div>
           </div>
         ))}
+
+        {/*Parametres de pagination*/}
         <ReactPaginate
           breakLabel="..."
           nextLabel=">>"

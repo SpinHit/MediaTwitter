@@ -6,18 +6,19 @@ import comment from './images/comment.svg';
 import Moment from 'react-moment';
 import 'moment/locale/fr';
 
-
+// Carte Twitter template
 export default function ({ tweets }) {
 
   return (
     <div className="carteTwitter">
       <ul>
         <li className="twitterDate">
+          {/* La librairie moment va faire en sorte d'afficher "Il y a X temps" en lui donnant la date comme entrée */}
           <p><Moment fromNow>{tweets.created_at}</Moment></p>
 
         </li>
         <li className="twitterText">
-
+          {/* on fait passer l'enssemble du texte dans le Linkify de sorte a ce que si il y a un lien il va etre autmatiquement cliquable. */}
           <Linkify >{tweets.text}</Linkify>
 
           <div className="likes">
